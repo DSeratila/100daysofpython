@@ -1,28 +1,27 @@
-alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+import subprocess
 
-direction = input("Type 'encode' to encrypt, type 'decode' to decrypt:\n")
-text = input("Type your message:\n").lower()
-shift = int(input("Type the shift number:\n"))
 
-def encrypt(text, shift):
-    result = ''
-    for letter in text:
-        letter_index = alphabet.index(letter)
-        new_letter_index = (letter_index + shift) % (len(alphabet) - 1)
-        result += alphabet[new_letter_index]
-    print(result)
+def clear():
+    subprocess.call("clear")
 
-def decrypt(text, shift):
-    result = ""
-    for letter in text:
-        cyphered_letter_index = alphabet.index(letter)
-        new_letter_index = cyphered_letter_index - shift
-        result += alphabet[new_letter_index]
-    print(result)
 
-if direction == "encode":
-    encrypt(text, shift)
-elif direction == "decode":
-    decrypt(text, shift)
-else:
-    print("wrong input")
+continue_biding = True
+bids = {}
+while continue_biding:
+    name = input("What is your name?:\n")
+    bid = int(input("What's your bid'?:\n"))
+    bids[name] = bid
+
+    continue_biding = not input("Anyone else?:\n").lower() == 'no'
+    if continue_biding:
+        clear()
+
+max_value = 0
+winner = ''
+
+for key in bids:
+    if bids[key] > max_value:
+        max_value = bids[key]
+        winner = key
+
+print(f"the winner is {winner} with bid {max_value}")
