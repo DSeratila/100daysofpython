@@ -1,38 +1,28 @@
-import random
-import hangman_stages
-import hangman_words
+alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
 
-print(hangman_stages.logo)
-lives_left = len(hangman_stages.stages)
+direction = input("Type 'encode' to encrypt, type 'decode' to decrypt:\n")
+text = input("Type your message:\n").lower()
+shift = int(input("Type the shift number:\n"))
 
-chosen_word = random.choice(hangman_words.word_list)
-# print(chosen_word)
+def encrypt(text, shift):
+    result = ''
+    for letter in text:
+        letter_index = alphabet.index(letter)
+        new_letter_index = (letter_index + shift) % (len(alphabet) - 1)
+        result += alphabet[new_letter_index]
+    print(result)
 
-display = list(('_' * len(chosen_word)))
+def decrypt(text, shift):
+    result = ""
+    for letter in text:
+        cyphered_letter_index = alphabet.index(letter)
+        new_letter_index = cyphered_letter_index - shift
+        result += alphabet[new_letter_index]
+    print(result)
 
-end_of_game = False
-while not end_of_game:
-    guess = input("Guess a letter:\n ").lower()
-
-    if guess in display:
-        print("You've already got this one. Choose smth else")
-        continue
-
-    for position in range(len(chosen_word)):
-        if chosen_word[position] == guess:
-            display[position] = guess
-
-    if guess not in chosen_word:
-        if lives_left > 1:
-            print("The letter is not in the world, you've guessed it wrong. You've lost 1 life")
-        lives_left -= 1
-        print(hangman_stages.stages[lives_left])
-        if lives_left == 0:
-            end_of_game = True
-            print("You Lose")
-
-    print(''.join(display))
-
-    if "_" not in display:
-        end_of_game = True
-        print("You won!")
+if direction == "encode":
+    encrypt(text, shift)
+elif direction == "decode":
+    decrypt(text, shift)
+else:
+    print("wrong input")
