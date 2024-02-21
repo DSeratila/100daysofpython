@@ -5,23 +5,49 @@ def clear():
     subprocess.call("clear")
 
 
-continue_biding = True
-bids = {}
-while continue_biding:
-    name = input("What is your name?:\n")
-    bid = int(input("What's your bid'?:\n"))
-    bids[name] = bid
+def add(n1, n2):
+    return n1 + n2
 
-    continue_biding = not input("Anyone else?:\n").lower() == 'no'
-    if continue_biding:
-        clear()
+def substract(n1, n2):
+    return  n1 - n2
 
-max_value = 0
-winner = ''
+def multiply(n1, n2):
+    return n1 * n2
 
-for key in bids:
-    if bids[key] > max_value:
-        max_value = bids[key]
-        winner = key
+def divide(n1, n2):
+    return n1/n2
 
-print(f"the winner is {winner} with bid {max_value}")
+operations = {
+    "+" : add,
+    "-" : substract,
+    "*" : multiply,
+    "/" : divide,
+}
+
+def calculator():
+    num1 = float(input("Enter the first number\n"))
+    continue_calculating = "y"
+
+    while continue_calculating == "y":
+        num2 = float(input("Enter the second number\n"))
+        print("Choose operation:")
+        for symbol in operations:
+            print(symbol)
+
+        symbol = input()
+
+        user_function = operations[symbol]
+        result = user_function(num1, num2)
+        print(f"{num1} {symbol} {num2} = {result}")
+
+        continue_calculating = input("Wanna continue? y/n\n")
+
+        if continue_calculating == "y":
+            num1 = result
+        else:
+            clear()
+            calculator()
+
+
+calculator()
+
