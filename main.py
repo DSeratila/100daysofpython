@@ -1,79 +1,53 @@
-#blackjack
-from random import choice
-import subprocess
+#number guessing game
+import random
+
+EASY_LEVEL_ATTEMPTS = 10
+HARD_LEVEL_ATTEMPTS = 5
+
+print('''Welcome to the Number Guessing Game!
+I'm thinking of a number between 1 and 100.''')
 
 
-def clear():
-    subprocess.call("clear")
-
-
-def deal_card():
-    cards = [11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
-    return choice(cards)
-
-
-def calculate_score(cards):
-    if sum(cards) == 21 and len(cards) == 2:
-        return 0
-
-    if 11 in cards and sum(cards) > 21:
-        cards.remove(11)
-        cards.append(1)
-
-    return sum(cards)
-
-
-def compare(user_score, computer_score):
-    if user_score == computer_score:
-        return "Draw"
-    elif computer_score == 0:
-        return "Lose, opponent has Blackjack"
-    elif user_score == 0:
-        return "Win with a Blackjack"
-    elif user_score > 21:
-        return "You wen over. You lose"
-    elif computer_score > 21:
-        return "Opponent went over. You win"
-    elif user_score > computer_score:
-        return "You win"
+def compare(number_to_guess, user_guess):
+    if number_to_guess == user_guess:
+        return "="
+    elif number_to_guess < user_guess:
+        return ">"
     else:
-        return "You lose"
+        return "<"
 
 
-def play_game():
-    user_cards = []
-    computer_cards = []
-    is_game_over = False
+difficulty = input("Choose a difficulty. Type 'easy' or 'hard':")
+attempts = 0
+number_to_guess = random.randint(1, 100)
+print(str(number_to_guess) + "<-----")
+won = False
 
-    for _ in range(2):
-        user_cards.append(deal_card())
-        computer_cards.append(deal_card())
-
-    while not is_game_over:
-        user_score = calculate_score(user_cards)
-        computer_score = calculate_score(computer_cards)
-        print(f" Your cards: {user_cards}, current score: {user_score}")
-        print(f" Computer's first cars: {computer_cards[0]}")
-
-        if user_score == 0 or computer_score == 0 or user_score > 21:
-            is_game_over = True
-        else:
-            user_shoud_deal  = input("Type 'y' to get another card; type 'n' to pass")
-            if user_shoud_deal.lower() == 'y':
-                user_cards.append(deal_card())
-            else:
-                is_game_over = True
-
-    while computer_score != 0 and computer_score < 17:
-        computer_cards.append(deal_card())
-        computer_score = calculate_score(computer_cards)
-
-    print(f"   Your final hand: {user_cards}, final score: {user_score}")
-    print(f"   Computer's final hand: {computer_cards}, final score: {computer_score}")
-    print(compare(user_score, computer_score))
+if difficulty == 'easy':
+    attempts = EASY_LEVEL_ATTEMPTS
+elif difficulty == 'hard':
+    attempts = HARD_LEVEL_ATTEMPTS
 
 
-while input("Do you want to play a game of Blackjack? Type 'y' or 'n': ") == "y":
-    clear()
-    play_game()
 
+while attempts > 0 and not won:
+    print(f"You have {attempts} remaining to guess the number")
+    guess = int(input("Make a guess: "))
+    comparison_result = compare(number_to_guess, guess)
+
+    if comparison_result == "=":
+        won = True
+    elif comparison_result == ">":
+        print("Too high.")
+    else:
+        print("Too low.")
+
+    if attempts > 0 and not won:
+        print("Guess again.")
+
+    attempts -= 1
+
+if won:
+    print(f"You got it! The answer was {number_to_guess}.")
+else:
+    print("You've run out of guesses, you lose.")
