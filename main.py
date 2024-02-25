@@ -1,53 +1,64 @@
-#number guessing game
+import art
+from game_data import data
 import random
-
-EASY_LEVEL_ATTEMPTS = 10
-HARD_LEVEL_ATTEMPTS = 5
-
-print('''Welcome to the Number Guessing Game!
-I'm thinking of a number between 1 and 100.''')
+import subprocess
 
 
-def compare(number_to_guess, user_guess):
-    if number_to_guess == user_guess:
-        return "="
-    elif number_to_guess < user_guess:
-        return ">"
+def clear():
+    subprocess.call("clear")
+
+
+def get_next(list_data:list):
+    array_len = len(list_data)
+    index = random.randint(0, array_len - 1)
+    return list_data.pop(index)
+
+
+def check_input(a, b, bid):
+    if bid.lower() == "a":
+        object_1 = a
+        object_2 = b
     else:
-        return "<"
+        object_1 = b
+        object_2 = a
 
-
-difficulty = input("Choose a difficulty. Type 'easy' or 'hard':")
-attempts = 0
-number_to_guess = random.randint(1, 100)
-print(str(number_to_guess) + "<-----")
-won = False
-
-if difficulty == 'easy':
-    attempts = EASY_LEVEL_ATTEMPTS
-elif difficulty == 'hard':
-    attempts = HARD_LEVEL_ATTEMPTS
-
-
-
-while attempts > 0 and not won:
-    print(f"You have {attempts} remaining to guess the number")
-    guess = int(input("Make a guess: "))
-    comparison_result = compare(number_to_guess, guess)
-
-    if comparison_result == "=":
-        won = True
-    elif comparison_result == ">":
-        print("Too high.")
+    if object_1["follower_count"] == object_2["follower_count"]:
+        return "equal"
+    elif object_1["follower_count"] > object_2["follower_count"]:
+        return "You're right"
     else:
-        print("Too low.")
+        return "Sorry, that's wrong"
 
-    if attempts > 0 and not won:
-        print("Guess again.")
 
-    attempts -= 1
+remains = len(data)
+user_score = 0
+lost = False
+object_a = get_next(data)
 
-if won:
-    print(f"You got it! The answer was {number_to_guess}.")
-else:
-    print("You've run out of guesses, you lose.")
+while remains > 1 and lost is False:
+    object_b = get_next(data)
+    remains = len(data)
+
+    print(art.logo)
+    print("Compare A: {}, a {}, from {} score {}".format(object_a["name"], object_a["description"], object_a["country"],
+                                                         object_a["follower_count"]))
+    print(art.vs)
+    print("Against B: {}, a {}, from {} score {}".format(object_b["name"], object_b["description"], object_b["country"],
+                                                         object_b["follower_count"]))
+
+    user_choice = input("Who has more followers: A or B?: ")
+
+    result = check_input(object_a, object_b, user_choice)
+
+    if result.lower() == "Sorry, that's wrong".lower():
+        lost = True
+        print("{}. Your score = {}".format(result, user_score))
+    else:
+        user_score += 1
+        print("{}. Your score = {}".format(result, user_score))
+        object_a = object_b
+        object_b = get_next(data)
+        clear()
+
+clear()
+
