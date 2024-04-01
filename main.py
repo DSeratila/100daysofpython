@@ -1,46 +1,42 @@
+import time
 import turtle
 from turtle import Turtle, Screen
 import random
 
 
-
 scr = Screen()
-scr.setup(500, 400)
-user_bet = scr.textinput(title="Make your bet", prompt="Which turtle is going to win? Enter the color:")
-colors = ["red", "orange", "teal", "green", "blue", "purple"]
-is_race_on = False
-all_turtles = []
+scr.setup(600, 600)
+scr.bgcolor("black")
+scr.title("Snake game")
+#disable refreshing the screen
+scr.tracer(0)
 
-for i in range(0, 6):
-    t = Turtle(shape='turtle')
-    t.color(colors[i])
-    all_turtles.append(t)
+snake = []
+starting_pos = [(0, 0), (-20, 0), (-40, 0)]
 
-
-starting_x_pos = -240
-starting_y_pos = 90
-
-for t in all_turtles:
-    t.teleport(starting_x_pos, starting_y_pos)
-    starting_y_pos -= 25
+for i in range(0, 3):
+    t = Turtle()
+    t.color("white")
+    t.shape("square")
     t.penup()
+    t.teleport(starting_pos[i][0], starting_pos[i][1])
+    snake.append(t)
 
+game_is_on = True
 
-if user_bet:
-    is_race_on = True
+while game_is_on:
+    scr.update()
+    time.sleep(0.1)
 
-while is_race_on:
-    if t.xcor() > 230:
-        is_race_on = False
-        print(t.pencolor())
-        if t.pencolor() == user_bet:
-            print("You've won")
-    for t in all_turtles:
-        t.forward(random.randint(0, 10))
-
-
-
-
+    for i in range(len(snake) - 1, 0, -1):
+        # print(i)
+        x = snake[i - 1].xcor()
+        y = snake[i - 1].ycor()
+        snake[i].goto(x, y)
+        # snake[i].setx(x)
+        # snake[i].sety(y)
+    snake[0].forward(20)
+    
 scr.exitonclick()
 
 
