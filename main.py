@@ -1,46 +1,42 @@
-from turtle import Screen
-from paddle import Paddle
-from ball import Ball
-from scoreboard import Scoreboard
 import time
-# import random
+import random
+from turtle import Screen
+from player import Player
+from car_manager import CarManager
+from scoreboard import Scoreboard
 
 
-scr = Screen()
-scr.setup(800, 600)
-scr.bgcolor("black")
-scr.title("Pong game")
-scr.tracer(0)
+screen = Screen()
+screen.setup(width=600, height=600)
+screen.tracer(0)
 
-r_paddle = Paddle((350, 0))
-l_paddle = Paddle((-350, 0))
-ball = Ball()
+player = Player()
+screen.listen()
+screen.onkey(player.move_up, "Up")
 score = Scoreboard()
+car_manager = CarManager()
 
-scr.listen()
-scr.onkey(r_paddle.go_up, "Up")
-scr.onkey(r_paddle.go_down, "Down")
-scr.onkey(l_paddle.go_up, "w")
-scr.onkey(l_paddle.go_down, "s")
+# player.goto(0, 260)
 
 game_is_on = True
+
 while game_is_on:
-    time.sleep(ball.move_speed)
-    scr.update()
-    ball.move()
+    time.sleep(0.1)
+    screen.update()
 
-    if ball.ycor() > 280 or ball.ycor() < -280:
-        ball.bounce_y()
+    if player.is_at_finishline():
+        score.level_up()
+        player.level_up()
+        car_manager.level_up()
 
-    if ball.distance(r_paddle) < 50 and ball.xcor() > 310 or ball.distance(l_paddle) < 50 and ball.xcor() < -320:
-        ball.bounce_x()
+    if random.randint(1, 6) == 6:
+        car_manager.add_car()
 
-    if ball.xcor() > 380:
-        ball.reset_position()
-        score.l_point()
+    car_manager.move_cars()
 
-    if ball.xcor() < -380:
-        ball.reset_position()
-        score.r_point()
+    for car in car_manager.all_cars:
+        if car.distance(player) < 20:
+            game_is_on = False
+            score.game_is_over()
 
-scr.exitonclick()
+screen.exitonclick()
