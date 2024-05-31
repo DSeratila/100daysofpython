@@ -1,45 +1,34 @@
-import csv
 import pandas
 
-# # with open("./weather_data.csv") as f:
-# #     data = csv.reader(f)
-# #     temperatures = []
-# #     for row in data:
-# #         print(row)
-#
-# data = pandas.read_csv("weather_data.csv")
-# # print(data)
-# # print(data["temp"])
-#
-# # data_dict = data.to_dict()
-# # avg_temp = data["temp"].mean()
-# # print(avg_temp)
-#
-# # monday = data[data.temp == data.temp.max()]
-# # print(monday)
-#
-# data_dict = {
-#     "students": ["Amy", "James", "Angela"],
-#     "scores": [76, 56, 65]
-# }
-#
-# data2 = pandas.DataFrame(data_dict)
-# print(data2)
-
-#we need to calculate how many squirrels of which color ther are in the file
-
-data = pandas.read_csv("2018_Central_Park_Squirrel_Census_-_Squirrel_Data_20240423.csv")
-grey_squirrels_count = len(data[data["Primary Fur Color"] == "Gray"])
-cinnamon_squirrels_count = len(data[data["Primary Fur Color"] == "Cinnamon"])
-black_squirrels_count = len(data[data["Primary Fur Color"] == "Black"])
-
-data_dict = {
-    "Fur Color": ["Gray", "Cinnamon", "Black"],
-    "Count": [grey_squirrels_count, cinnamon_squirrels_count, black_squirrels_count]
+student_dict = {
+    "student": ["Angela", "James", "Lily"],
+    "score": [56, 76, 98]
 }
 
-print(data_dict)
+# Looping through dictionaries:
+for (key, value) in student_dict.items():
+    # Access key and value
+    pass
 
-df = pandas.DataFrame(data_dict)
-df.to_csv("squirrel_cnt")
+student_data_frame = pandas.DataFrame(student_dict)
 
+# Loop through rows of a data frame
+for (index, row) in student_data_frame.iterrows():
+    # Access index and row
+    # Access row.student or row.score
+    pass
+
+# TODO 1. Create a dictionary in this format:
+# {"A": "Alfa", "B": "Bravo"}
+df = pandas.read_csv('nato_phonetic_alphabet.csv')
+
+nato_dict = {row.letter: row.code for index, row in df.iterrows()}
+
+# TODO 2. Create a list of the phonetic code words from a word that the user inputs.
+
+usr_wrd = input("Enter the word: ")
+
+
+n_list = [nato_dict[l.upper()] for l in usr_wrd]
+
+print(n_list)
