@@ -1,42 +1,48 @@
 import requests
+from datetime import datetime
 
-STOCK_ENDPOINT = 'https://www.alphavantage.co/query'
-STOCK_NAME = "TSLA"
-NEWS_ENDPOINT = 'https://newsapi.org/v2/everything'
-NEWS_API_KEY = 'd543e8c31da54eeb95a32b61955efe63'
-COMPANY_NAME = "TESLA"
+pixela_endpoint = 'https://pixe.la/v1/users'
 
-with open("api_key", "r") as file:
-    STOCK_API_KEY = file.read()
 
-print(STOCK_API_KEY)
-
-stock_params = {
-    "function": "TIME_SERIES_DAILY",
-    "symbol": STOCK_NAME,
-    "apikey": STOCK_API_KEY
+user_params = {
+    "token": "zzyzhzhzhzhzhzhzhzzhzhzhzljlzlzlzl",
+    "username": "dmitriys",
+    "agreeTermsOfService": "yes",
+    "notMinor": "yes"
 }
 
-response = requests.get(STOCK_ENDPOINT, params=stock_params).json()
-data = response["Time Series (Daily)"]
-data_list = [value for (key, value) in data.items()]
+response = requests.post(url=pixela_endpoint, json=user_params)
+print(response.text)
+# {"message":"Success. Let's visit https://pixe.la/@dmitriys , it is your profile page!","isSuccess":true}
 
-yesterdays_closing_price = float(data_list[0]["4. close"])
-print(yesterdays_closing_price)
 
-day_before_yesterdays_closing_price = float(data_list[1]["4. close"])
-print(day_before_yesterdays_closing_price)
+USER_NAME = 'dmitriys'
+TOKEN = 'zzyzhzhzhzhzhzhzhzzhzhzhzljlzlzlzl'
+GRAPH_NAME = 'graph1'
 
-diff = abs(yesterdays_closing_price - day_before_yesterdays_closing_price)
-diff_prc = (diff/yesterdays_closing_price)*100
-print(round(diff_prc, 2))
+graph_endpoint = f"{pixela_endpoint}/{USER_NAME}/graphs"
 
-if diff_prc > 0:
-    news_params = {
-        "apiKey": NEWS_API_KEY,
-        "qInTitle": COMPANY_NAME
-    }
+graph_config = {
+    "id": GRAPH_NAME,
+    "name": "test_graph",
+    "unit": "Km",
+    "type": "float",
+    "color": "sora"
+}
 
-    news_response = requests.get(NEWS_ENDPOINT, params=news_params).json()
-    articles = news_response["articles"][:2]
-    print(articles)
+headers = {
+    "X-USER-TOKEN": TOKEN
+}
+
+response_graph = requests.post(url=graph_endpoint, json=graph_config, headers=headers)
+print(response_graph.text)
+
+pixel_creation_endpoint = f"{pixela_endpoint}/{USER_NAME}/graphs/{GRAPH_NAME}"
+
+pixel_data = {
+    "date": datetime.today().strftime("%Y%m%d"),
+    "quantity": "100"
+}
+
+response_pixel = requests.post(url=pixel_creation_endpoint, json=pixel_data, headers=headers)
+print(response_pixel.text)
