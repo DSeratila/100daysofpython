@@ -1,48 +1,49 @@
-import requests
+import sys
 from datetime import datetime
+import requests
+import os
+from dotenv import load_dotenv
 
-pixela_endpoint = 'https://pixe.la/v1/users'
+load_dotenv()
 
+API_KEY = os.environ.get('NUTRITION_API_KEY')
+APP_ID = os.environ.get('NUTRITION_APP_ID')
 
-user_params = {
-    "token": "zzyzhzhzhzhzhzhzhzzhzhzhzljlzlzlzl",
-    "username": "dmitriys",
-    "agreeTermsOfService": "yes",
-    "notMinor": "yes"
-}
-
-response = requests.post(url=pixela_endpoint, json=user_params)
-print(response.text)
-# {"message":"Success. Let's visit https://pixe.la/@dmitriys , it is your profile page!","isSuccess":true}
-
-
-USER_NAME = 'dmitriys'
-TOKEN = 'zzyzhzhzhzhzhzhzhzzhzhzhzljlzlzlzl'
-GRAPH_NAME = 'graph1'
-
-graph_endpoint = f"{pixela_endpoint}/{USER_NAME}/graphs"
-
-graph_config = {
-    "id": GRAPH_NAME,
-    "name": "test_graph",
-    "unit": "Km",
-    "type": "float",
-    "color": "sora"
-}
+endpoint = 'https://trackapi.nutritionix.com/v2/natural/exercise'
 
 headers = {
-    "X-USER-TOKEN": TOKEN
+    "x-app-id": APP_ID,
+    "x-app-key": API_KEY
 }
 
-response_graph = requests.post(url=graph_endpoint, json=graph_config, headers=headers)
-print(response_graph.text)
+user_activity = input("Enter details about your activity:\n ")
 
-pixel_creation_endpoint = f"{pixela_endpoint}/{USER_NAME}/graphs/{GRAPH_NAME}"
-
-pixel_data = {
-    "date": datetime.today().strftime("%Y%m%d"),
-    "quantity": "100"
+request_config = {
+    "query": user_activity
 }
 
-response_pixel = requests.post(url=pixel_creation_endpoint, json=pixel_data, headers=headers)
-print(response_pixel.text)
+response = requests.post(url=endpoint, json=request_config, headers=headers)
+current_date = datetime.now().strftime("%d/%m/%Y")
+current_time = datetime.now().strftime("%X")
+response_json = response.json()
+
+
+sheety_endpoint = 'https://api.sheety.co/aae6f5b087b40c08e5a4a2addfb2587a/100DaysofpythonDay38/workouts'
+SHEETY_AUTH_TOKEN = os.environ.get('SHEETY_AUTH_TOKEN')
+
+for ex in response_json["exercises"]:
+    sheety_request_body = {
+            "workout": {
+                "date": current_date,
+                "time": current_time,
+                "exercise": ex["name"].title(),
+                "duration": ex["duration_min"],
+                "calories": ex["nf_calories"]
+            }
+    }
+
+    sheety_headers = {"Authorization": SHEETY_AUTH_TOKEN}
+    sheety_response = requests.post(url=sheety_endpoint, json=sheety_request_body, headers=sheety_headers)
+
+
+
